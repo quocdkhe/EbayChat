@@ -1,0 +1,52 @@
+services:
+  ebay-chat1:
+    build: .
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=db,1433;Database=CloneEbayDB;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
+    depends_on:
+      - db
+    networks:
+      - appnet
+    ports:
+      - "5001:8080"
+
+  ebay-chat2:
+    build: .
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=db,1433;Database=CloneEbayDB;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
+    depends_on:
+      - db
+    networks:
+      - appnet
+    ports:
+      - "5002:8080"
+
+  ebay-chat3:
+    build: .
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=db,1433;Database=CloneEbayDB;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
+    depends_on:
+      - db
+    networks:
+      - appnet
+    ports:
+      - "5003:8080"
+
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql-ebaychat
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrong!Passw0rd
+    ports:
+      - "1433:1433"
+    networks:
+      - appnet
+    volumes:
+      - mssql_data:/var/opt/mssql   
+
+networks:
+  appnet:
+
+volumes:
+  mssql_data:   

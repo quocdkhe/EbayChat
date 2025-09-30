@@ -12,7 +12,9 @@ namespace EbayChat
 
             // Add DbContext
             builder.Services.AddDbContext<CloneEbayDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+                        .EnableSensitiveDataLogging()
+                        .LogTo(Console.WriteLine, LogLevel.Information));
 
             // Denpendency injection for services
             builder.Services.AddScoped<Services.IUserServices, UserServices>();
