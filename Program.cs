@@ -1,4 +1,4 @@
-using EbayChat.Entities;
+﻿using EbayChat.Entities;
 using EbayChat.Services.ServicesImpl;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
@@ -49,12 +49,6 @@ namespace EbayChat
 
             var app = builder.Build();
 
-            // Auto apply migrations at startup
-            using (var scope = app.Services.CreateScope())
-            {
-                var dbContext = scope.ServiceProvider.GetRequiredService<CloneEbayDbContext>();
-                dbContext.Database.Migrate();
-            }
 
             // Configure the HTTP request pipeline
             if (!app.Environment.IsDevelopment())

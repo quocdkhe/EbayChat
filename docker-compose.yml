@@ -10,7 +10,7 @@ services:
     networks:
       - appnet
     ports:
-      - "5001:8080"
+      - "127.0.0.1:5001:8080"
     volumes:
       - dpkeys:/keys
 
@@ -23,7 +23,7 @@ services:
     networks:
       - appnet
     ports:
-      - "5002:8080"
+      - "127.0.0.1:5002:8080"
     volumes:
       - dpkeys:/keys
 
@@ -36,7 +36,7 @@ services:
     networks:
       - appnet
     ports:
-      - "5003:8080"
+      - "127.0.0.1:5003:8080"
     volumes:
       - dpkeys:/keys
 
@@ -47,7 +47,7 @@ services:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=YourStrong!Passw0rd
     ports:
-      - "1433:1433"
+      - "127.0.0.1:1433:1433"
     networks:
       - appnet
     volumes:
