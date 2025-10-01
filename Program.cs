@@ -19,7 +19,7 @@ namespace EbayChat
             // Denpendency injection for services
             builder.Services.AddScoped<Services.IUserServices, UserServices>();
 
-            // Add services to the container.
+            // Add view engine
             builder.Services.AddControllersWithViews();
 
             // Add session support
@@ -30,6 +30,14 @@ namespace EbayChat
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
+            // Keep session between docker containers using SQL Server distributed cache
+            builder.Services.AddDistributedSqlServerCache(options =>
+            {
+                options.ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+                options.SchemaName = "dbo";
+                options.TableName = "SessionCache";
+            });
+
 
             var app = builder.Build();
 
