@@ -1,5 +1,6 @@
 using EbayChat.Entities;
 using EbayChat.Services.ServicesImpl;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 
 namespace EbayChat
@@ -10,17 +11,30 @@ namespace EbayChat
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Persist Data Protection keys to /keys (mounted volume)
+            builder.Services.AddDataProtection()
+                .PersistKeysToFileSystem(new DirectoryInfo(@"/keys"))
+                .SetApplicationName("EbayChatApp");
+
             // Add DbContext
             builder.Services.AddDbContext<CloneEbayDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
                         .EnableSensitiveDataLogging()
                         .LogTo(Console.WriteLine, LogLevel.Information));
 
-            // Denpendency injection for services
+            // Dependency injection for services
             builder.Services.AddScoped<Services.IUserServices, UserServices>();
 
-            // Add view engine
+            // Add view engines
             builder.Services.AddControllersWithViews();
+
+            // Add distributed SQL Server cache for sessions
+            builder.Services.AddDistributedSqlServerCache(options =>
+            {
+                options.ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+                options.SchemaName = "dbo";
+                options.TableName = "SessionCache";
+            });
 
             // Add session support
             builder.Services.AddHttpContextAccessor();
@@ -29,15 +43,9 @@ namespace EbayChat
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
+                options.Cookie.Name = ".EbayChat.Session";       // same for all containers
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // if using HTTPS
             });
-            // Keep session between docker containers using SQL Server distributed cache
-            builder.Services.AddDistributedSqlServerCache(options =>
-            {
-                options.ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-                options.SchemaName = "dbo";
-                options.TableName = "SessionCache";
-            });
-
 
             var app = builder.Build();
 
@@ -48,24 +56,25 @@ namespace EbayChat
                 dbContext.Database.Migrate();
             }
 
-            // Configure the HTTP request pipeline.
+            // Configure the HTTP request pipeline
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            app.UseSession();
+
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
+
             app.UseRouting();
 
             app.UseAuthorization();
 
-            app.MapStaticAssets();
+            app.UseSession(); // must be before controllers
+
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}")
-                .WithStaticAssets();
+                pattern: "{controller=Home}/{action=Index}/{id?}");
 
             app.Run();
         }

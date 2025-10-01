@@ -1,3 +1,5 @@
+version: '3.9'
+
 services:
   ebay-chat1:
     build: .
@@ -9,6 +11,8 @@ services:
       - appnet
     ports:
       - "5001:8080"
+    volumes:
+      - dpkeys:/keys
 
   ebay-chat2:
     build: .
@@ -20,6 +24,8 @@ services:
       - appnet
     ports:
       - "5002:8080"
+    volumes:
+      - dpkeys:/keys
 
   ebay-chat3:
     build: .
@@ -31,6 +37,8 @@ services:
       - appnet
     ports:
       - "5003:8080"
+    volumes:
+      - dpkeys:/keys
 
   db:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -43,10 +51,11 @@ services:
     networks:
       - appnet
     volumes:
-      - mssql_data:/var/opt/mssql   
+      - dbdata:/var/opt/mssql  # persist database
 
 networks:
   appnet:
 
 volumes:
-  mssql_data:   
+  dpkeys:  # shared Data Protection keys
+  dbdata:  # persist SQL Server data
