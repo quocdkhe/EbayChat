@@ -14,54 +14,213 @@
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Homepage.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/EbayChat.styles.css" asp-append-version="true" />
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">EbayChat</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
+        <div class="container">
+            <div class="row custom-nav">
 
-                    <ul class="navbar-nav">
-                        @if (string.IsNullOrEmpty(username))
-                        {
-                            <li class="nav-item">
-                                <a class="btn btn-outline-primary" asp-controller="Auth" asp-action="Login">Login</a>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown"
-                                   role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <img src="@avatar" alt="avatar" class="rounded-circle me-2" style="width:30px;height:30px;" />
-                                    <span>@username</span>
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                    <li><a class="dropdown-item" asp-controller="Home" asp-action="Index">Dashboard</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" asp-controller="Auth" asp-action="Logout">Logout</a></li>
-                                </ul>
-                            </li>
-                        }
+                <span class="col-auto">
+                    @* ======= CHƯA ĐĂNG NHẬP ======= *@
+                    @if (string.IsNullOrEmpty(username))
+                    {
+                        <span id="logorreg">
+                            Hi! <a asp-controller="Auth" asp-action="Login">Sign in</a> or
+                            <a asp-controller="Auth" asp-action="Register">register</a>
+                        </span>
+                    }
+                    else
+                    {
+                        @* ======= ĐÃ ĐĂNG NHẬP – HIển Dropdown ======= *@
+                        <div class="dropdown">
+                            <button class="btn dropdown-toggle p-0 border-0 bg-transparent"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                <span>Hi @username</span>
+                            </button>
+
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a class="dropdown-item text-danger"
+                                       asp-controller="Auth" asp-action="Logout">
+                                        <i class="bi bi-box-arrow-right me-1"></i> Logout
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    }
+                </span>
+                <a class="col-auto custom-link" href="">Help & Contact</a>
+
+                <a class="nav-spacing col-auto custom-link" href="">Ship to</a>
+                <a class="col-auto custom-link">Sell</a>
+                <div class="col-auto">
+                    <a href="" class=" custom-nav" type="button">
+                        Watchlist
+                    </a>
+                </div>
+                <div class="dropdown col-auto">
+                    <button class="btn dropdown-toggle custom-nav" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        My eBay
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Summary</a></li>
+                        <li><a class="dropdown-item" href="#">Recently Viewed</a></li>
+                        <li><a class="dropdown-item" href="#">Bids/Offers</a></li>
+                        <li><a class="dropdown-item" href="#">Watchlist</a></li>
+                        <li><a class="dropdown-item" href="#">Purchase History</a></li>
+                        <li><a class="dropdown-item" href="#">Buy Again</a></li>
+                        <li><a class="dropdown-item" href="#">Selling</a></li>
+                        <li><a class="dropdown-item" href="#">Saved Searches</a></li>
+                        <li><a class="dropdown-item" href="#">Saved Sellers</a></li>
+                        <li><a class="dropdown-item" href="BoxChat">Messages</a></li>
                     </ul>
                 </div>
 
+                <img style="width: 45px; height: 30px;" src="Assets/images/bell .svg" alt="">
+                <img style="width: 45px; height: 30px;" src="Assets/images/cart.svg" alt="">
             </div>
-        </nav>
+        </div>
+        <hr class="custom-hr">
+
+
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-1">
+                    <a asp-controller="Home" asp-action="Index">
+                        <svg class="ebay-logo" xmlns="http://www.w3.org/2000/svg" viewBox=".1 .1 299.8 120.125">
+                            <path fill="#e53238" d="M38.867 26.309C17.721 26.309.1 35.279.1 62.345c0 21.442 11.849 34.944 39.312 34.944 32.326 0 34.398-21.294 34.398-21.294H58.147s-3.358 11.466-19.69 11.466c-13.302 0-22.869-8.986-22.869-21.58h59.861v-7.904c0-12.46-7.91-31.668-36.582-31.668zM38.32 36.41c12.662 0 21.294 7.757 21.294 19.383h-43.68c0-12.343 11.268-19.383 22.386-19.383z" />
+                            <path fill="#0064d2" d="M75.438.1v83.597c0 4.745-.339 11.408-.339 11.408h14.939s.537-4.785.537-9.159c0 0 7.381 11.548 27.451 11.548 21.134 0 35.49-14.674 35.49-35.695 0-19.557-13.186-35.286-35.456-35.286-20.854 0-27.334 11.261-27.334 11.261V.1H75.438zm38.766 36.753c14.352 0 23.479 10.652 23.479 24.946 0 15.328-10.541 25.355-23.376 25.355-15.318 0-23.581-11.961-23.581-25.219 0-12.354 7.414-25.082 23.478-25.082z" />
+                            <path fill="#f5af02" d="M190.645 26.309c-31.812 0-33.852 17.418-33.852 20.202h15.834s.83-10.169 16.926-10.169c10.459 0 18.564 4.788 18.564 13.991v3.276h-18.564c-24.645 0-37.674 7.21-37.674 21.841 0 14.398 12.038 22.232 28.307 22.232 22.172 0 29.314-12.251 29.314-12.251 0 4.873.375 9.675.375 9.675h14.076s-.545-5.952-.545-9.76V52.432c0-21.582-17.408-26.123-32.761-26.123zm17.472 37.128v4.368c0 5.697-3.516 19.861-24.212 19.861-11.333 0-16.192-5.656-16.192-12.217 0-11.935 16.363-12.012 40.404-12.012z" />
+                            <path fill="#86b817" d="M214.879 29.041h17.813l25.565 51.218 25.506-51.218H299.9l-46.459 91.184h-16.927l13.406-25.419-35.041-65.765z" />
+                        </svg>
+                    </a>
+                    
+                </div>
+
+
+
+                <button class="btn dropdown-toggle custom-category-button col-auto" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span>Shop by</span><br>
+                    <span>Category</span>
+                </button>
+                <ul class="dropdown-menu col-lg-6">
+                    <div class="custom-cont">
+
+                        <div class="row custom-style-dropdown">
+                            <div class=" col-lg-4">
+                                <h6>Collectibles & art</h6>
+                                <hr>
+                                <p><a href="" class="custom-link">Collectibles</a></p>
+                                <p><a href="" class="custom-link">Antiques</a></p>
+                                <p><a href="" class="custom-link">Sports memorabilia</a></p>
+                                <p><a href="" class="custom-link">Art</a></p>
+
+                                <h6>Electronics</h6>
+                                <hr>
+                                <p><a href="" class="custom-link">Computers & tablets</a></p>
+                                <p><a href="" class="custom-link">Cameras & photo</a></p>
+                                <p><a href="" class="custom-link">TV, audio & surveillance</a></p>
+                                <p><a href="" class="custom-link">Cell phones & accessories</a></p>
+
+                                <h6>Fashion</h6>
+                                <hr>
+                                <p><a href="" class="custom-link">Women</a></p>
+                                <p><a href="" class="custom-link">Men</a></p>
+                                <p><a href="" class="custom-link">Jewelry & watches</a></p>
+                                <p><a href="" class="custom-link">Shoes</a></p>
+
+                            </div>
+
+                            <div class=" col-lg-4">
+                                <h6>Home & garden</h6>
+                                <hr>
+                                <p><a href="" class="custom-link">Yard, garden & outdoor</a></p>
+                                <p><a href="" class="custom-link">Crafts</a></p>
+                                <p><a href="" class="custom-link">Home improvement</a></p>
+                                <p><a href="" class="custom-link">Pet supplies</a></p>
+
+                                <h6>Auto Parts & Accessories</h6>
+                                <hr>
+                                <p><a href="" class="custom-link">GPS & Security Devices</a></p>
+                                <p><a href="" class="custom-link">Radar & Laser Detectors</a></p>
+                                <p><a href="" class="custom-link">Care & Detailing</a></p>
+                                <p><a href="" class="custom-link">Scooter Parts & Accessories</a></p>
+
+                                <h6>Musical instruments & gear</h6>
+                                <hr>
+                                <p><a href="" class="custom-link">Guitar</a></p>
+                                <p><a href="" class="custom-link">Pro audio equipment</a></p>
+                                <p><a href="" class="custom-link">String</a></p>
+                                <p><a href="" class="custom-link">Stage lighting & effects</a></p>
+
+
+                            </div>
+
+                            <div class=" col-lg-4">
+                                <h6>Sporting goods</h6>
+                                <hr>
+                                <p><a href="" class="custom-link">Outdoor sports</a></p>
+                                <p><a href="" class="custom-link">Team sports</a></p>
+                                <p><a href="" class="custom-link">Exercise & fitness</a></p>
+                                <p><a href="" class="custom-link">Golf</a></p>
+
+                                <h6>Toys & hobbies</h6>
+                                <hr>
+                                <p><a href="" class="custom-link">Radio control</a></p>
+                                <p><a href="" class="custom-link">Kids toys</a></p>
+                                <p><a href="" class="custom-link">Action figures</a></p>
+                                <p><a href="" class="custom-link">Dolls & bears</a></p>
+
+                                <h6>Other categories</h6>
+                                <hr>
+                                <p><a href="" class="custom-link">Video games & consoles</a></p>
+                                <p><a href="" class="custom-link">Health & beauty</a></p>
+                                <p><a href="" class="custom-link">Baby</a></p>
+                                <p><a href="" class="custom-link">Business & industrial</a></p>
+
+
+                            </div>
+
+                        </div>
+                    </div>
+                </ul>
+
+
+                <form class="col-lg-8" role="search">
+
+                    <div class="input-group">
+
+                        <input type="text" class="form-control search-input" placeholder="Search for anything" aria-describedby="basic-addon1">
+                        <div class="dropdown col-lg-2">
+                            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                All Category
+                            </button>
+                            <ul class="dropdown-menu">
+
+                                <li><a class="dropdown-item">Parts and accessories</a></li>
+                                <li><a class="dropdown-item">Trading cards</a></li>
+                                <li><a class="dropdown-item">Pre-loved luxury</a></li>
+                                <li><a class="dropdown-item">Sneakers</a></li>
+                                <li><a class="dropdown-item">Watches</a></li>
+                                <li><a class="dropdown-item">Handbags</a></li>
+                                <li><a class="dropdown-item">Sell</a></li>
+
+                            </ul>
+                        </div>
+                        <button class="col-lg-2 btn btn-primary" type="button">Search</button>
+                    </div>
+
+
+                </form>
+
+                <div class="col-lg-1">
+                    <a href="" style="font-size: 12px;">Advanced</a>
+                </div>
+            </div>
+        </div>
+
     </header>
     <div class="container">
         <main role="main" class="pb-3">
@@ -69,9 +228,75 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - EbayChat - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="custom-footer container">
+            <div class=" row">
+                <div class="custom-footer-column">
+                    <h6 href="" class="footer-heads custom-link">Buy</h6>
+                    <p><a href="" class="custom-link">Registration</a></p>
+                    <p><a href="" class="custom-link">eBay Money Back Guarantee</a></p>
+                    <p><a href="" class="custom-link">Bidding & buying help</a></p>
+                    <p><a href="" class="custom-link">Stores</a></p>
+                </div>
+                <div class="custom-footer-column">
+                    <div>
+                        <h6 href="" onclick="fetchCategory(17)" class="footer-heads link">Sell</h6>
+                        <p><a href="" onclick="fetchCategory(17)" class="link">Start selling</a></p>
+                        <p><a href="" class="custom-link">Learn to sell</a></p>
+                        <p><a href="" class="custom-link">Affiliates</a></p>
+                    </div>
+                    <div>
+                        <h6 href="" class="footer-heads custom-link">Tools & apps</h6>
+                        <p><a href="" class="custom-link">Developers</a></p>
+                        <p><a href="" class="custom-link">Security center</a></p>
+                        <p><a href="" class="custom-link">Site map</a></p>
+                    </div>
+                </div>
+                <div class="custom-footer-column">
+                    <h6 href="" class="footer-heads custom-link">Stay connected</h6>
+                    <p><a href="" class="custom-link">eBay's Blogs</a></p>
+                    <p><a href="" class="custom-link">Facebook</a></p>
+                    <p><a href="" class="custom-link">Twitter</a></p>
+                </div>
+                <div class="custom-footer-column">
+                    <h6 href="" class="footer-heads custom-link">About eBay</h6>
+                    <p><a href="" class="custom-link">Company info</a></p>
+                    <p><a href="" class="custom-link">News</a></p>
+                    <p><a href="" class="custom-link">Investors</a></p>
+                    <p><a href="" class="custom-link">Careers</a></p>
+                    <p><a href="" class="custom-link">Government relations</a></p>
+                    <p><a href="" class="custom-link">Advertise with us</a></p>
+                    <p><a href="" class="custom-link">Policies</a></p>
+                    <p><a href="" class="custom-link">Verified Rights Owner (VeRO) Program</a></p>
+                </div>
+                <div class="custom-footer-column">
+                    <div>
+                        <h6 href="" class="footer-heads custom-link">Help & Contact</h6>
+                        <p><a href="" class="custom-link">Seller Information Center</a></p>
+                        <p><a href="" class="custom-link">Contact us</a></p>
+                    </div>
+                    <div>
+                        <h6 href="" class="footer-heads custom-link">Community</h6>
+                        <p><a href="" class="custom-link">Announcements</a></p>
+                        <p><a href="" class="custom-link">Discussion boards</a></p>
+                        <p><a href="" class="custom-link">eBay Giving Works</a></p>
+                    </div>
+                    <div>
+                        <h6 class="footer-heads custom-link ">eBay Sites</h6>
+
+                        <div class="" onmouseover="languages('countryDropdown', true)" onmouseout="languages('countryDropdown', false)">
+                            <button type="button" class="btn">Language..</button>
+                            <div class="language-container" id="countryDropdown">
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+            </div>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
