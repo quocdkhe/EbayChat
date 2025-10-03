@@ -1,6 +1,7 @@
 using EbayChat.Entities;
 using EbayChat.Hubs;
 using EbayChat.Services.ServicesImpl;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 
 namespace EbayChat
@@ -11,16 +12,35 @@ namespace EbayChat
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Persist Data Protection keys to /keys (mounted volume)
+            builder.Services.AddDataProtection()
+                .PersistKeysToFileSystem(new DirectoryInfo(@"/keys"))
+                .SetApplicationName("EbayChatApp");
+
             // Add DbContext
             builder.Services.AddDbContext<CloneEbayDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+                        .EnableSensitiveDataLogging()
+                        .LogTo(Console.WriteLine, LogLevel.Information));
 
-            // Denpendency injection for services
+            // Dependency injection for services
             builder.Services.AddScoped<Services.IUserServices, UserServices>();
 
-            // Add services to the container.
+            // Add view engines
             builder.Services.AddControllersWithViews();
-            builder.Services.AddSignalR();
+            builder.Services.AddSignalR()
+            .AddStackExchangeRedis("redis:6379", options =>
+            {
+                options.Configuration.ChannelPrefix = "EbayChat";
+            });
+
+            // Add distributed SQL Server cache for sessions
+            builder.Services.AddDistributedSqlServerCache(options =>
+            {
+                options.ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+                options.SchemaName = "dbo";
+                options.TableName = "SessionCache";
+            });
 
             // Add session support
             builder.Services.AddHttpContextAccessor();
@@ -29,6 +49,8 @@ namespace EbayChat
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
+                options.Cookie.Name = ".EbayChat.Session";       // same for all containers
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // if using HTTPS
             });
 
             var app = builder.Build();
