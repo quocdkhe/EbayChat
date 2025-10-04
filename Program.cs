@@ -28,11 +28,17 @@ namespace EbayChat
 
             // Add view engines
             builder.Services.AddControllersWithViews();
-            builder.Services.AddSignalR()
-            .AddStackExchangeRedis("redis:6379", options =>
+            // Always add SignalR
+            var signalR = builder.Services.AddSignalR();
+
+            // Only use Redis backplane in production
+            if (builder.Environment.IsProduction())
             {
-                options.Configuration.ChannelPrefix = "EbayChat";
-            });
+                signalR.AddStackExchangeRedis("redis:6379", options =>
+                {
+                    options.Configuration.ChannelPrefix = "EbayChat";
+                });
+            }
 
             // Add distributed SQL Server cache for sessions
             builder.Services.AddDistributedSqlServerCache(options =>
