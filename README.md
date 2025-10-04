@@ -1,4 +1,4 @@
-﻿test jenkins
+﻿
 ---
 
 # ASP.NET Core MVC – Project Structure & Basics
