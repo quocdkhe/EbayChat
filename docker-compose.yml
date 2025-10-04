@@ -43,6 +43,17 @@ services:
     volumes:
       - dpkeys:/keys
 
+  migrate:
+    build:
+      context: .
+      target: migrate
+    depends_on:
+      - db
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=db,1433;Database=CloneEbayDB;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;"
+    networks:
+      - appnet
+
   db:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: mssql-ebaychat
