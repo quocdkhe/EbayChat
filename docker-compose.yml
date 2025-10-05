@@ -2,7 +2,9 @@ version: '3.9'
 
 services:
   ebay-chat1:
-    build: .
+    build: 
+      context: .
+      target: runtime
     environment:
       - ConnectionStrings__DefaultConnection=Server=db,1433;Database=CloneEbayDB;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
     depends_on:
@@ -15,7 +17,9 @@ services:
       - dpkeys:/keys
 
   ebay-chat2:
-    build: .
+    build: 
+      context: .
+      target: runtime
     environment:
       - ConnectionStrings__DefaultConnection=Server=db,1433;Database=CloneEbayDB;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
     depends_on:
@@ -28,7 +32,9 @@ services:
       - dpkeys:/keys
 
   ebay-chat3:
-    build: .
+    build: 
+      context: .
+      target: runtime
     environment:
       - ConnectionStrings__DefaultConnection=Server=db,1433;Database=CloneEbayDB;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
     depends_on:
@@ -39,6 +45,17 @@ services:
       - "127.0.0.1:5003:8080"
     volumes:
       - dpkeys:/keys
+
+  migrate:
+    build:
+      context: .
+      target: migrate
+    depends_on:
+      - db
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=db,1433;Database=CloneEbayDB;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;"
+    networks:
+      - appnet
 
   db:
     image: mcr.microsoft.com/mssql/server:2022-latest
