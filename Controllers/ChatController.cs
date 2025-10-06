@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using EbayChat.Entities;
+﻿using EbayChat.Entities;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChatApp.Controllers
@@ -13,11 +13,9 @@ namespace ChatApp.Controllers
             _context = context;
         }
 
-        // Trang chính - danh sách users
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var users = await _context.Users.ToListAsync();
-            return View(users);
+            return View();
         }
 
         // Trang chat với một user cụ thể
@@ -45,7 +43,6 @@ namespace ChatApp.Controllers
             ViewBag.ReceiverId = receiverId;
             ViewBag.ReceiverName = receiver.username;
             ViewBag.Messages = messages;
-
             return View();
         }
 
@@ -71,5 +68,7 @@ namespace ChatApp.Controllers
 
             return Json(messages);
         }
+
+
     }
 }

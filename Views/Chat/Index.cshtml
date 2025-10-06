@@ -1,129 +1,328 @@
-﻿@model IEnumerable<EbayChat.Entities.User>
-
-@{
-    ViewData["Title"] = "Chọn người để chat";
+﻿@{
+    Layout = null;
 }
-
 <!DOCTYPE html>
 <html>
 <head>
-    <title>@ViewData["Title"]</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            margin: 0;
-            padding: 20px;
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-
-        .header h1 {
-            margin: 0;
-            font-size: 32px;
-        }
-
-        .user-list {
-            padding: 20px;
-        }
-
-        .user-item {
-            display: flex;
-            align-items: center;
-            padding: 20px;
-            margin-bottom: 10px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .user-item:hover {
-            background: #e9ecef;
-            transform: translateX(5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .user-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 24px;
-            font-weight: bold;
-            margin-right: 15px;
-        }
-
-        .user-info {
-            flex: 1;
-        }
-
-        .user-name {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .user-email {
-            color: #6c757d;
-            font-size: 14px;
-        }
-
-        .instruction {
-            text-align: center;
-            padding: 20px;
-            color: #6c757d;
-            font-style: italic;
-        }
-    </style>
+    <title>Chat Application</title>
+    <link rel="stylesheet" href="~/css/ChatIndex.css" />
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>💬 Chat Application</h1>
-            <p>Chọn người dùng để bắt đầu trò chuyện</p>
+    <div class="chat-app">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <button class="back-button" onclick="window.history.back()">←</button>
+                <div class="sidebar-header-content">
+                    <h1>Messages</h1>
+                    <input type="text" class="search-box" placeholder="Search conversations..." id="searchBox">
+                </div>
+            </div>
+            <div class="user-list" id="userList">
+                <!-- Users will be populated here -->
+            </div>
         </div>
 
-        <div class="instruction">
-            <p>Bạn đang đăng nhập với tư cách User ID: 1 (Alice). Click vào user bên dưới để chat.</p>
-        </div>
+        <!-- Chat Area -->
+        <div class="chat-area" id="chatArea">
+            <div class="welcome-screen" id="welcomeScreen">
+                <div class="welcome-screen-icon">💬</div>
+                <h2>Select a conversation</h2>
+                <p>Choose a contact to start messaging</p>
+            </div>
 
-        <div class="user-list">
-            @foreach (var user in Model)
-            {
-                @if (user.id != 1) // Không hiển thị chính mình
-                {
-                    <a href="@Url.Action("Chat", "Chat", new { senderId = 1, receiverId = user.id })" class="user-item">
-                        <div class="user-avatar">@user.username.Substring(0, 1).ToUpper()</div>
-                        <div class="user-info">
-                            <div class="user-name">@user.username</div>
-                            <div class="user-email">@user.email</div>
+            <div class="chat-header" id="chatHeader" style="display: none;">
+                <div class="chat-header-info">
+                    <div class="receiver-avatar" id="receiverAvatar"></div>
+                    <div class="receiver-info">
+                        <h2 id="receiverName"></h2>
+                        <div class="receiver-status">
+                            <span id="typingIndicator" class="typing-indicator">Typing...</span>
+                            <span id="onlineStatus">Active now</span>
                         </div>
-                    </a>
-                }
-            }
+                    </div>
+                </div>
+                <div>
+                    <span id="connectionStatus" class="connection-status">Connecting...</span>
+                </div>
+            </div>
+
+            <div id="messagesContainer" class="messages-container" style="display: none;">
+                <!-- Messages will be loaded here -->
+            </div>
+
+            <div class="input-container" id="inputContainer" style="display: none;">
+                <input type="text" id="messageInput" placeholder="Type a message..." />
+                <button id="sendButton">➤</button>
+            </div>
         </div>
     </div>
+
+    <script>
+        // Fake data for demonstration
+        const currentUserId = 1;
+        const currentUserName = "You";
+
+        const fakeUsers = [
+            {
+                id: 2,
+                name: "John Smith",
+                avatar: "JS",
+                lastMessage: "Thanks for your help!",
+                time: "10:30 AM",
+                seen: false,
+            },
+            {
+                id: 3,
+                name: "Sarah Johnson",
+                avatar: "SJ",
+                lastMessage: "The item looks great",
+                time: "9:15 AM",
+                seen: false
+            },
+            {
+                id: 4,
+                name: "Mike Williams",
+                avatar: "MW",
+                lastMessage: "When can you ship it?",
+                time: "Yesterday",
+                seen: true
+            },
+            {
+                id: 5,
+                name: "Emma Davis",
+                avatar: "ED",
+                lastMessage: "Is this still available?",
+                time: "Yesterday",
+                seen: true
+            },
+            {
+                id: 6,
+                name: "David Brown",
+                avatar: "DB",
+                lastMessage: "Payment sent",
+                time: "Monday",
+                seen: true
+            },
+            {
+                id: 7,
+                name: "Lisa Anderson",
+                avatar: "LA",
+                lastMessage: "Can you provide more details?",
+                time: "Monday",
+                seen: true
+            }
+        ];
+
+        const fakeMessages = {
+            2: [
+                { senderId: 2, content: "Hi, is this item still available?", sentAt: "10:20 AM" },
+                { senderId: 1, content: "Yes, it's available!", sentAt: "10:22 AM" },
+                { senderId: 2, content: "Great! Can I see more pictures?", sentAt: "10:25 AM" },
+                { senderId: 1, content: "Sure, I'll send them shortly", sentAt: "10:27 AM" },
+                { senderId: 2, content: "Thanks for your help!", sentAt: "10:30 AM" }
+            ],
+            3: [
+                { senderId: 1, content: "The item is in excellent condition", sentAt: "9:10 AM" },
+                { senderId: 3, content: "The item looks great", sentAt: "9:15 AM" }
+            ],
+            4: [
+                { senderId: 4, content: "I'm interested in buying this", sentAt: "Yesterday" },
+                { senderId: 1, content: "That's great! Let me know if you have questions", sentAt: "Yesterday" },
+                { senderId: 4, content: "When can you ship it?", sentAt: "Yesterday" }
+            ],
+            5: [
+                { senderId: 5, content: "Is this still available?", sentAt: "Yesterday" },
+                { senderId: 1, content: "Yes, it is!", sentAt: "Yesterday" }
+            ],
+            6: [
+                { senderId: 1, content: "I'll ship it today", sentAt: "Monday" },
+                { senderId: 6, content: "Payment sent", sentAt: "Monday" }
+            ],
+            7: [
+                { senderId: 7, content: "Can you provide more details?", sentAt: "Monday" }
+            ]
+        };
+
+        let selectedUserId = null;
+        let messagesData = JSON.parse(JSON.stringify(fakeMessages)); // Deep copy
+
+        // Populate user list
+        function populateUserList() {
+            const userList = document.getElementById('userList');
+            userList.innerHTML = '';
+
+            fakeUsers.forEach(user => {
+                const userItem = document.createElement('div');
+                userItem.className = 'user-item';
+                userItem.dataset.userId = user.id;
+
+                userItem.innerHTML = `
+                    <div class="user-avatar">
+                        ${user.avatar}
+                        ${!user.seen ? '<div class="unread-dot"></div>' : ''}
+                    </div>
+                    <div class="user-info">
+                        <div class="user-header">
+                            <span class="user-name">${user.name}</span>
+                            <span class="user-time">${user.time}</span>
+                        </div>
+                        <div class="user-last-message">
+                            ${user.lastMessage}
+                        </div>
+                    </div>
+                `;
+
+                userItem.addEventListener('click', () => selectUser(user.id));
+                userList.appendChild(userItem);
+            });
+        }
+
+        // Select user and open chat
+        function selectUser(userId) {
+            selectedUserId = userId;
+            const user = fakeUsers.find(u => u.id === userId);
+
+            // Update active state
+            document.querySelectorAll('.user-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`[data-user-id="${userId}"]`).classList.add('active');
+
+            // Show chat area
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('chatHeader').style.display = 'flex';
+            document.getElementById('messagesContainer').style.display = 'block';
+            document.getElementById('inputContainer').style.display = 'flex';
+
+            // Update header
+            document.getElementById('receiverAvatar').textContent = user.avatar;
+            document.getElementById('receiverName').textContent = user.name;
+            document.getElementById('connectionStatus').textContent = 'Connected';
+            document.getElementById('connectionStatus').className = 'connection-status connected';
+
+            // Load messages
+            loadMessages(userId);
+
+            // Clear unread dot, or mark as seen
+            const userItem = document.querySelector(`[data-user-id="${userId}"]`);
+            const dot = userItem.querySelector('.unread-dot');
+            if (dot) dot.remove();
+
+            // Update user unread count
+            const userObj = fakeUsers.find(u => u.id === userId);
+            if (userObj) userObj.unread = 0;
+        }
+
+        // Load messages
+        function loadMessages(userId) {
+            const container = document.getElementById('messagesContainer');
+            container.innerHTML = '';
+
+            const messages = messagesData[userId] || [];
+            messages.forEach(msg => displayMessage(msg));
+            scrollToBottom();
+        }
+
+        // Display message
+        function displayMessage(messageData) {
+            const container = document.getElementById('messagesContainer');
+            const div = document.createElement('div');
+            div.className = (messageData.senderId === currentUserId) ? 'message sent' : 'message received';
+            div.innerHTML = `
+                <div class="message-content">
+                    <div class="message-text">${escapeHtml(messageData.content)}</div>
+                    <div class="message-time">${messageData.sentAt}</div>
+                </div>
+            `;
+            container.appendChild(div);
+            scrollToBottom();
+        }
+
+        // Send message
+        function sendMessage() {
+            if (!selectedUserId) return;
+
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            const now = new Date();
+            const time = now.getHours().toString().padStart(2, '0') + ':' +
+                        now.getMinutes().toString().padStart(2, '0') + ' ' +
+                        (now.getHours() >= 12 ? 'PM' : 'AM');
+
+            const messageData = {
+                senderId: currentUserId,
+                content: message,
+                sentAt: time
+            };
+
+            // Add to messages
+            if (!messagesData[selectedUserId]) {
+                messagesData[selectedUserId] = [];
+            }
+            messagesData[selectedUserId].push(messageData);
+
+            // Display message
+            displayMessage(messageData);
+
+            // Update user list
+            const user = fakeUsers.find(u => u.id === selectedUserId);
+            user.lastMessage = message;
+            user.time = time;
+            populateUserList();
+            document.querySelector(`[data-user-id="${selectedUserId}"]`).classList.add('active');
+
+            input.value = '';
+            input.focus();
+
+            // Simulate reply (optional)
+            setTimeout(() => {
+                const replyData = {
+                    senderId: selectedUserId,
+                    content: "Thanks for your message! 👍",
+                    sentAt: new Date().getHours() + ':' + new Date().getMinutes() + ' ' +
+                           (new Date().getHours() >= 12 ? 'PM' : 'AM')
+                };
+                messagesData[selectedUserId].push(replyData);
+                if (document.querySelector(`[data-user-id="${selectedUserId}"]`).classList.contains('active')) {
+                    displayMessage(replyData);
+                }
+            }, 2000);
+        }
+
+        // Event listeners
+        document.getElementById('sendButton').addEventListener('click', sendMessage);
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Search functionality
+        document.getElementById('searchBox').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            document.querySelectorAll('.user-item').forEach(item => {
+                const name = item.querySelector('.user-name').textContent.toLowerCase();
+                item.style.display = name.includes(searchTerm) ? 'flex' : 'none';
+            });
+        });
+
+        function scrollToBottom() {
+            const c = document.getElementById('messagesContainer');
+            c.scrollTop = c.scrollHeight;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text ?? "";
+            return div.innerHTML;
+        }
+
+        // Initialize
+        populateUserList();
+    </script>
 </body>
 </html>
