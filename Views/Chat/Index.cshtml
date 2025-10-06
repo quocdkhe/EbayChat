@@ -1,5 +1,6 @@
 ﻿@{
     Layout = null;
+    var boxChats = ViewBag.BoxChats;
 }
 <!DOCTYPE html>
 <html>
@@ -19,7 +20,27 @@
                 </div>
             </div>
             <div class="user-list" id="userList">
-                <!-- Users will be populated here -->
+                @foreach (var boxChatItem in boxChats)
+                {
+                    <div class="user-item" data-partner-id="">
+                        <div class="user-avatar">
+                            AB
+                            @if (!boxChatItem.Seen)
+                            {
+                                <div class="unread-dot"></div>
+                            }
+                        </div>
+                        <div class="user-info">
+                            <div class="user-header">
+                                <span class="user-name">@boxChatItem.Name</span>
+                                <span class="user-time">@boxChatItem.Time</span>
+                            </div>
+                            <div class="user-last-message">
+                                @boxChatItem.LastMessage
+                            </div>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
 
@@ -49,6 +70,7 @@
 
             <div id="messagesContainer" class="messages-container" style="display: none;">
                 <!-- Messages will be loaded here -->
+                
             </div>
 
             <div class="input-container" id="inputContainer" style="display: none;">
@@ -322,7 +344,7 @@
         }
 
         // Initialize
-        populateUserList();
+        // populateUserList();
     </script>
 </body>
 </html>

@@ -1,4 +1,5 @@
 ﻿using EbayChat.Entities;
+using EbayChat.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,16 +8,27 @@ namespace ChatApp.Controllers
     public class ChatController : Controller
     {
         private readonly CloneEbayDbContext _context;
+        private readonly IChatServices _chatServices;
 
-        public ChatController(CloneEbayDbContext context)
+        public ChatController(CloneEbayDbContext context, IChatServices chatServices)
         {
             _context = context;
+            _chatServices = chatServices;
         }
 
         public IActionResult Index()
         {
+            int userId = HttpContext.Session.GetInt32("userId") ?? 0;
+            if (userId == 0)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+            var BoxChats = _chatServices.GetBoxChats(userId).Result;
+            ViewBag.BoxChats = BoxChats;
             return View();
         }
+
+
 
         // Trang chat với một user cụ thể
         public async Task<IActionResult> Chat(int senderId, int receiverId)

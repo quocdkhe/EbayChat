@@ -25,6 +25,7 @@ namespace EbayChat
 
             // Dependency injection for services
             builder.Services.AddScoped<Services.IUserServices, UserServices>();
+            builder.Services.AddScoped<Services.IChatServices, ChatServices>();
 
             // Add view engines
             builder.Services.AddControllersWithViews();
