@@ -1,7 +1,5 @@
-﻿using EbayChat.Data;
-using EbayChat.Entities;
+﻿using EbayChat.Entities;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
 
 namespace EbayChat.Hubs
 {
