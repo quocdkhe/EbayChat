@@ -1,350 +1,141 @@
 ﻿@{
     Layout = null;
-    var boxChats = ViewBag.BoxChats;
 }
-<!DOCTYPE html>
 <html>
 <head>
-    <title>Chat Application</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/ChatIndex.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <script src="~/js/bootstrap.min.js"></script>
+
 </head>
 <body>
-    <div class="chat-app">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <button class="back-button" onclick="window.history.back()">←</button>
-                <div class="sidebar-header-content">
-                    <h1>Messages</h1>
-                    <input type="text" class="search-box" placeholder="Search conversations..." id="searchBox">
-                </div>
-            </div>
-            <div class="user-list" id="userList">
-                @foreach (var boxChatItem in boxChats)
-                {
-                    <div class="user-item" data-partner-id="">
-                        <div class="user-avatar">
-                            AB
-                            @if (!boxChatItem.Seen)
-                            {
-                                <div class="unread-dot"></div>
-                            }
+    <div class="chat-container">
+        <div class="messaging">
+            <div class="inbox_msg">
+                <div class="inbox_people">
+                    <div class="headind_srch">
+                        <div class="recent_heading">
+                            <h4>Recent</h4>
                         </div>
-                        <div class="user-info">
-                            <div class="user-header">
-                                <span class="user-name">@boxChatItem.Name</span>
-                                <span class="user-time">@boxChatItem.Time</span>
-                            </div>
-                            <div class="user-last-message">
-                                @boxChatItem.LastMessage
+                        <div class="srch_bar">
+                            <div class="stylish-input-group">
+                                <input type="text" class="search-bar" placeholder="Search">
+                                <span class="input-group-addon">
+                                    <button type="button"> <i class="fa fa-search" aria-hidden="true"></i> </button>
+                                </span>
                             </div>
                         </div>
                     </div>
-                }
-            </div>
-        </div>
-
-        <!-- Chat Area -->
-        <div class="chat-area" id="chatArea">
-            <div class="welcome-screen" id="welcomeScreen">
-                <div class="welcome-screen-icon">💬</div>
-                <h2>Select a conversation</h2>
-                <p>Choose a contact to start messaging</p>
-            </div>
-
-            <div class="chat-header" id="chatHeader" style="display: none;">
-                <div class="chat-header-info">
-                    <div class="receiver-avatar" id="receiverAvatar"></div>
-                    <div class="receiver-info">
-                        <h2 id="receiverName"></h2>
-                        <div class="receiver-status">
-                            <span id="typingIndicator" class="typing-indicator">Typing...</span>
-                            <span id="onlineStatus">Active now</span>
+                    <div class="inbox_chat">
+                        <div class="chat_list active_chat">
+                            
+                            <div class="chat_people">
+                                <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+                                <div class="chat_ib">
+                                    <h5>Sunil Rajput 
+                                        <span class="chat_date">Dec 25</span>
+                                    </h5>
+                                    <p>
+                                        Test, which is a new approach to have all solutions
+                                        astrology under one roof.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chat_list">
+                            <div class="chat_people">
+                                <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+                                <div class="chat_ib">
+                                    <h5>
+                                        Sunil Rajput
+                                        <span class="unread"></span>
+                                        <span class="chat_date">Dec 25</span>
+                                    </h5>
+                                    <p>
+                                        Test, which is a new approach to have all solutions
+                                        astrology under one roof.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div>
-                    <span id="connectionStatus" class="connection-status">Connecting...</span>
+
+
+
+                <div class="mesgs">
+                    <div class="msg_history">
+                        <div class="incoming_msg">
+                            <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+                            <div class="received_msg">
+                                <div class="received_withd_msg">
+                                    <p>
+                                        Test which is a new approach to have all
+                                        solutions
+                                    </p>
+                                    <span class="incoming_time_date"> 11:01 AM    |    June 9</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="outgoing_msg">
+                            <div class="sent_msg">
+                                <p>
+                                    Test which is a new approach to have all
+                                    solutions
+                                </p>
+                                <span class="outgoing_time_date"> 11:01 AM    |    June 9</span>
+                            </div>
+                        </div>
+
+                        <div class="incoming_msg">
+                            <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+                            <div class="received_msg">
+                                <div class="received_withd_msg">
+                                    <p>
+                                        very long content here hehehe very long content here hehehe very long content here hehehe very long content here hehehe very long content here hehehe very long content here hehehe hehehe very long content here hehehe hehehe very long content here hehehe hehehe very long content here hehehe
+                                       
+                                    </p>
+                                    <span class="incoming_time_date"> 11:01 AM | Yesterday</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="outgoing_msg">
+                            <div class="sent_msg">
+                                <p>
+                                    very long content here hehehe very long content here hehehe very long content here hehehe very long content here hehehe very long content here hehehe very long content here hehehe hehehe very long content here hehehe hehehe very long content here hehehe hehehe very long content here hehehe
+                                </p>
+                                <span class="outgoing_time_date"> 11:01 AM    |    Today</span>
+                            </div>
+                        </div>
+
+                        <div class="incoming_msg">
+                            <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+                            <div class="received_msg">
+                                <div class="received_withd_msg">
+                                    <p>
+                                        We work directly with our designers and suppliers,
+                                        and sell direct to you, which means quality, exclusive
+                                        products, at a price anyone can afford.
+                                    </p>
+                                    <span class="incoming_time_date"> 11:01 AM    |    Today</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="type_msg">
+                        <div class="input_msg_write">
+                            <input type="text" class="write_msg" placeholder="Type a message" />
+                            <button class="msg_send_btn" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+                        </div>
+                    </div>
                 </div>
-            </div>
-
-            <div id="messagesContainer" class="messages-container" style="display: none;">
-                <!-- Messages will be loaded here -->
-                
-            </div>
-
-            <div class="input-container" id="inputContainer" style="display: none;">
-                <input type="text" id="messageInput" placeholder="Type a message..." />
-                <button id="sendButton">➤</button>
             </div>
         </div>
     </div>
-
-    <script>
-        // Fake data for demonstration
-        const currentUserId = 1;
-        const currentUserName = "You";
-
-        const fakeUsers = [
-            {
-                id: 2,
-                name: "John Smith",
-                avatar: "JS",
-                lastMessage: "Thanks for your help!",
-                time: "10:30 AM",
-                seen: false,
-            },
-            {
-                id: 3,
-                name: "Sarah Johnson",
-                avatar: "SJ",
-                lastMessage: "The item looks great",
-                time: "9:15 AM",
-                seen: false
-            },
-            {
-                id: 4,
-                name: "Mike Williams",
-                avatar: "MW",
-                lastMessage: "When can you ship it?",
-                time: "Yesterday",
-                seen: true
-            },
-            {
-                id: 5,
-                name: "Emma Davis",
-                avatar: "ED",
-                lastMessage: "Is this still available?",
-                time: "Yesterday",
-                seen: true
-            },
-            {
-                id: 6,
-                name: "David Brown",
-                avatar: "DB",
-                lastMessage: "Payment sent",
-                time: "Monday",
-                seen: true
-            },
-            {
-                id: 7,
-                name: "Lisa Anderson",
-                avatar: "LA",
-                lastMessage: "Can you provide more details?",
-                time: "Monday",
-                seen: true
-            }
-        ];
-
-        const fakeMessages = {
-            2: [
-                { senderId: 2, content: "Hi, is this item still available?", sentAt: "10:20 AM" },
-                { senderId: 1, content: "Yes, it's available!", sentAt: "10:22 AM" },
-                { senderId: 2, content: "Great! Can I see more pictures?", sentAt: "10:25 AM" },
-                { senderId: 1, content: "Sure, I'll send them shortly", sentAt: "10:27 AM" },
-                { senderId: 2, content: "Thanks for your help!", sentAt: "10:30 AM" }
-            ],
-            3: [
-                { senderId: 1, content: "The item is in excellent condition", sentAt: "9:10 AM" },
-                { senderId: 3, content: "The item looks great", sentAt: "9:15 AM" }
-            ],
-            4: [
-                { senderId: 4, content: "I'm interested in buying this", sentAt: "Yesterday" },
-                { senderId: 1, content: "That's great! Let me know if you have questions", sentAt: "Yesterday" },
-                { senderId: 4, content: "When can you ship it?", sentAt: "Yesterday" }
-            ],
-            5: [
-                { senderId: 5, content: "Is this still available?", sentAt: "Yesterday" },
-                { senderId: 1, content: "Yes, it is!", sentAt: "Yesterday" }
-            ],
-            6: [
-                { senderId: 1, content: "I'll ship it today", sentAt: "Monday" },
-                { senderId: 6, content: "Payment sent", sentAt: "Monday" }
-            ],
-            7: [
-                { senderId: 7, content: "Can you provide more details?", sentAt: "Monday" }
-            ]
-        };
-
-        let selectedUserId = null;
-        let messagesData = JSON.parse(JSON.stringify(fakeMessages)); // Deep copy
-
-        // Populate user list
-        function populateUserList() {
-            const userList = document.getElementById('userList');
-            userList.innerHTML = '';
-
-            fakeUsers.forEach(user => {
-                const userItem = document.createElement('div');
-                userItem.className = 'user-item';
-                userItem.dataset.userId = user.id;
-
-                userItem.innerHTML = `
-                    <div class="user-avatar">
-                        ${user.avatar}
-                        ${!user.seen ? '<div class="unread-dot"></div>' : ''}
-                    </div>
-                    <div class="user-info">
-                        <div class="user-header">
-                            <span class="user-name">${user.name}</span>
-                            <span class="user-time">${user.time}</span>
-                        </div>
-                        <div class="user-last-message">
-                            ${user.lastMessage}
-                        </div>
-                    </div>
-                `;
-
-                userItem.addEventListener('click', () => selectUser(user.id));
-                userList.appendChild(userItem);
-            });
-        }
-
-        // Select user and open chat
-        function selectUser(userId) {
-            selectedUserId = userId;
-            const user = fakeUsers.find(u => u.id === userId);
-
-            // Update active state
-            document.querySelectorAll('.user-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            document.querySelector(`[data-user-id="${userId}"]`).classList.add('active');
-
-            // Show chat area
-            document.getElementById('welcomeScreen').style.display = 'none';
-            document.getElementById('chatHeader').style.display = 'flex';
-            document.getElementById('messagesContainer').style.display = 'block';
-            document.getElementById('inputContainer').style.display = 'flex';
-
-            // Update header
-            document.getElementById('receiverAvatar').textContent = user.avatar;
-            document.getElementById('receiverName').textContent = user.name;
-            document.getElementById('connectionStatus').textContent = 'Connected';
-            document.getElementById('connectionStatus').className = 'connection-status connected';
-
-            // Load messages
-            loadMessages(userId);
-
-            // Clear unread dot, or mark as seen
-            const userItem = document.querySelector(`[data-user-id="${userId}"]`);
-            const dot = userItem.querySelector('.unread-dot');
-            if (dot) dot.remove();
-
-            // Update user unread count
-            const userObj = fakeUsers.find(u => u.id === userId);
-            if (userObj) userObj.unread = 0;
-        }
-
-        // Load messages
-        function loadMessages(userId) {
-            const container = document.getElementById('messagesContainer');
-            container.innerHTML = '';
-
-            const messages = messagesData[userId] || [];
-            messages.forEach(msg => displayMessage(msg));
-            scrollToBottom();
-        }
-
-        // Display message
-        function displayMessage(messageData) {
-            const container = document.getElementById('messagesContainer');
-            const div = document.createElement('div');
-            div.className = (messageData.senderId === currentUserId) ? 'message sent' : 'message received';
-            div.innerHTML = `
-                <div class="message-content">
-                    <div class="message-text">${escapeHtml(messageData.content)}</div>
-                    <div class="message-time">${messageData.sentAt}</div>
-                </div>
-            `;
-            container.appendChild(div);
-            scrollToBottom();
-        }
-
-        // Send message
-        function sendMessage() {
-            if (!selectedUserId) return;
-
-            const input = document.getElementById('messageInput');
-            const message = input.value.trim();
-            if (!message) return;
-
-            const now = new Date();
-            const time = now.getHours().toString().padStart(2, '0') + ':' +
-                        now.getMinutes().toString().padStart(2, '0') + ' ' +
-                        (now.getHours() >= 12 ? 'PM' : 'AM');
-
-            const messageData = {
-                senderId: currentUserId,
-                content: message,
-                sentAt: time
-            };
-
-            // Add to messages
-            if (!messagesData[selectedUserId]) {
-                messagesData[selectedUserId] = [];
-            }
-            messagesData[selectedUserId].push(messageData);
-
-            // Display message
-            displayMessage(messageData);
-
-            // Update user list
-            const user = fakeUsers.find(u => u.id === selectedUserId);
-            user.lastMessage = message;
-            user.time = time;
-            populateUserList();
-            document.querySelector(`[data-user-id="${selectedUserId}"]`).classList.add('active');
-
-            input.value = '';
-            input.focus();
-
-            // Simulate reply (optional)
-            setTimeout(() => {
-                const replyData = {
-                    senderId: selectedUserId,
-                    content: "Thanks for your message! 👍",
-                    sentAt: new Date().getHours() + ':' + new Date().getMinutes() + ' ' +
-                           (new Date().getHours() >= 12 ? 'PM' : 'AM')
-                };
-                messagesData[selectedUserId].push(replyData);
-                if (document.querySelector(`[data-user-id="${selectedUserId}"]`).classList.contains('active')) {
-                    displayMessage(replyData);
-                }
-            }, 2000);
-        }
-
-        // Event listeners
-        document.getElementById('sendButton').addEventListener('click', sendMessage);
-        document.getElementById('messageInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
-
-        // Search functionality
-        document.getElementById('searchBox').addEventListener('input', (e) => {
-            const searchTerm = e.target.value.toLowerCase();
-            document.querySelectorAll('.user-item').forEach(item => {
-                const name = item.querySelector('.user-name').textContent.toLowerCase();
-                item.style.display = name.includes(searchTerm) ? 'flex' : 'none';
-            });
-        });
-
-        function scrollToBottom() {
-            const c = document.getElementById('messagesContainer');
-            c.scrollTop = c.scrollHeight;
-        }
-
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text ?? "";
-            return div.innerHTML;
-        }
-
-        // Initialize
-        // populateUserList();
-    </script>
 </body>
 </html>
