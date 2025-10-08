@@ -24,13 +24,15 @@ namespace EbayChat.Services.ServicesImpl
                     .OrderByDescending(m => m.timestamp)
                     .FirstOrDefault()
                 )
+                .OrderByDescending(m => m.timestamp)
                 .Select(m => new BoxChatDTO
                 {
-                    ReceiverId = m.senderId == userId ? m.receiver.id : m.sender.id,
+                    SenderId = m.sender.id,
+                    ReceiverId = m.receiver.id,
                     Name = m.senderId == userId ? m.receiver.username : m.sender.username,
                     Avatar = m.senderId == userId ? m.receiver.avatarURL : m.sender.avatarURL,
                     LastMessage = m.content,
-                    Time = m.timestamp.ToString(),
+                    Time = Utils.DateHelper.FormatChatTime(m.timestamp.ToString()),
                     Seen = m.seen
                 })
                 .AsEnumerable();
@@ -38,14 +40,14 @@ namespace EbayChat.Services.ServicesImpl
             return Task.FromResult(boxChats);
         }
 
-
-        public Task<IEnumerable<Message>> GetAllMessagesBySenderAndReceiver(int senderId, int receiverId)
+        public async Task<IEnumerable<Message>> GetAllMessagesBySenderAndReceiver(int senderId, int receiverId)
         {
-            var messages = _context.Messages
-                .Where(m => (m.senderId == senderId && m.receiverId == receiverId) || (m.senderId == receiverId && m.receiverId == senderId))
+            return await _context.Messages
+                .Where(m =>
+                    (m.senderId == senderId && m.receiverId == receiverId) ||
+                    (m.senderId == receiverId && m.receiverId == senderId))
                 .OrderBy(m => m.timestamp)
-                .AsEnumerable();
-            return Task.FromResult(messages);
+                .ToListAsync();
         }
     }
 }

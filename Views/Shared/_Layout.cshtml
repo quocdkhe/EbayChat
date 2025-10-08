@@ -1,6 +1,4 @@
-﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
-
-@{
+﻿@{
     var username = HttpContextAccessor.HttpContext?.Session.GetString("username");
     var avatar = HttpContextAccessor.HttpContext?.Session.GetString("avatarURL");
 }

@@ -1,24 +1,31 @@
 ﻿@{
     Layout = null;
+    var currentUserId = HttpContextAccessor.HttpContext.Session.GetInt32("userId");
 }
+@using EbayChat.Models.DTOs;
+@model List<BoxChatDTO>
+
 <html>
 <head>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/ChatIndex.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-    <script src="~/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
+    <script src="~/js/chat-logic.js"></script>
 
 </head>
 <body>
     <div class="chat-container">
         <div class="messaging">
             <div class="inbox_msg">
+                @* Box chat start here  *@
+                
                 <div class="inbox_people">
                     <div class="headind_srch">
                         <div class="recent_heading">
                             <h4>Recent</h4>
                         </div>
+                        @* Search bar start here *@
                         <div class="srch_bar">
                             <div class="stylish-input-group">
                                 <input type="text" class="search-bar" placeholder="Search">
@@ -27,10 +34,12 @@
                                 </span>
                             </div>
                         </div>
+                        @* Search bar end here *@
                     </div>
+                    @* All box chats *@
                     <div class="inbox_chat">
-                        <div class="chat_list active_chat">
-                            
+                        @* Box chat example 1 *@
+                        @* <div class="chat_list active_chat">
                             <div class="chat_people">
                                 <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
                                 <div class="chat_ib">
@@ -43,8 +52,9 @@
                                     </p>
                                 </div>
                             </div>
-                        </div>
-                        <div class="chat_list">
+                        </div> *@
+                        @* Box chat example 2 *@
+                        @* <div class="chat_list">
                             <div class="chat_people">
                                 <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
                                 <div class="chat_ib">
@@ -59,14 +69,43 @@
                                     </p>
                                 </div>
                             </div>
-                        </div>
+                        </div> *@
+
+                        @foreach(var boxChatItem in Model)
+                        {
+                            <div class="chat_list" onclick="selectUser(@currentUserId ,@boxChatItem.SenderId, @boxChatItem.ReceiverId, '@boxChatItem.Avatar')">
+                                <div class="chat_people">
+                                    <div class="chat_img"> <img class="rounded-circle" src="@boxChatItem.Avatar" alt="avatar"> </div>
+                                    <div class="chat_ib">
+                                        <h5>
+                                            @boxChatItem.Name
+                                            @if (boxChatItem.SenderId != currentUserId && !boxChatItem.Seen.GetValueOrDefault())
+                                            {
+                                                <span class="unread"></span>
+                                            }
+                                            <span class="chat_date">@boxChatItem.Time</span>
+                                        </h5>
+                                        <p>
+                                            @boxChatItem.LastMessage
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
                     </div>
                 </div>
+                @* Right columns start here  *@
 
+                @* Messages shown here  *@
+                <div class="mesgs" id="chatArea">
+                    <div class="welcome-screen" id="welcomeScreen">
+                        <div class="welcome-screen-icon">💬</div>
+                        <h2>Select a conversation</h2>
+                        <p>Choose a contact to start messaging</p>
+                    </div>
 
-
-                <div class="mesgs">
-                    <div class="msg_history">
+                    @* <div class="msg_history">
                         <div class="incoming_msg">
                             <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
                             <div class="received_msg">
@@ -86,7 +125,7 @@
                                     Test which is a new approach to have all
                                     solutions
                                 </p>
-                                <span class="outgoing_time_date"> 11:01 AM    |    June 9</span>
+                                <span class="outgoing_time_date"> 11:01 AM | June 9</span>
                             </div>
                         </div>
 
@@ -125,14 +164,15 @@
                                 </div>
                             </div>
                         </div>
-
-                    </div>
-                    <div class="type_msg">
+                    </div> *@
+                    
+                    @* Typing area *@
+                    @* <div class="type_msg">
                         <div class="input_msg_write">
                             <input type="text" class="write_msg" placeholder="Type a message" />
                             <button class="msg_send_btn" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
                         </div>
-                    </div>
+                    </div> *@
                 </div>
             </div>
         </div>
