@@ -1,4 +1,4 @@
-﻿using EbayChat.Data;
+﻿//using EbayChat.Data;
 using EbayChat.Entities;
 using EbayChat.Services.ServicesImpl;
 using Microsoft.AspNetCore.DataProtection;
@@ -27,6 +27,7 @@ namespace EbayChat
             builder.Services.AddScoped<Services.IUserServices, UserServices>();
             builder.Services.AddScoped<Services.ICategoryService, CategoryService>();
             builder.Services.AddScoped<Services.IProductService, ProductService>();
+            builder.Services.AddHttpClient(); // for HttpClientFactory
 
             // Add view engines
             builder.Services.AddControllersWithViews();
@@ -61,12 +62,12 @@ namespace EbayChat
             }
 
             // Generate fake data
-            using (var scope = app.Services.CreateScope())
-            {
-                var context = scope.ServiceProvider.GetRequiredService<CloneEbayDbContext>();
-                var initializer = new DbInitializer(context);
-                initializer.Initialize();
-            }
+            //using (var scope = app.Services.CreateScope())
+            //{
+            //    var context = scope.ServiceProvider.GetRequiredService<CloneEbayDbContext>();
+            //    var initializer = new DbInitializer(context);
+            //    initializer.Initialize();
+            //}
 
 
             app.UseHttpsRedirection();

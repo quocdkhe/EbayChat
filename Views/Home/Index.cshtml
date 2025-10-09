@@ -27,7 +27,7 @@
 			@foreach (var category in categories)
 			{
 				<div>
-					<a class="btn custom-link">
+					<a class="btn custom-link" asp-controller="Product" asp-action="Index" asp-route-categoryId="@category.id">
 						@category.name
 					</a>
 				</div>
