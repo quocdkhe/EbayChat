@@ -49,5 +49,38 @@ namespace EbayChat.Services.ServicesImpl
                 .OrderBy(m => m.timestamp)
                 .ToListAsync();
         }
+
+        public async Task MarkAsSeen(int senderId, int receiverId)
+        {
+            // Get all messages sent by 'sender' to 'receiver' that are not seen yet
+            var unseenMessages = await _context.Messages
+                .Where(m => m.senderId == senderId && m.receiverId == receiverId && m.seen == false)
+                .ToListAsync();
+
+            if (unseenMessages.Any())
+            {
+                foreach (var msg in unseenMessages)
+                {
+                    msg.seen = true;
+                }
+
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task SendMessage(int senderId, int receiverId, String content, bool seen)
+        {
+            var newMessage = new Message
+            {
+                senderId = senderId,
+                receiverId = receiverId,
+                content = content,
+                timestamp = DateTime.UtcNow,
+                seen = seen
+            };
+            _context.Messages.Add(newMessage);
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

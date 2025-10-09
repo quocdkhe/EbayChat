@@ -7,5 +7,8 @@ namespace EbayChat.Services
     {
         Task<IEnumerable<BoxChatDTO>> GetBoxChats(int userId);
         Task<IEnumerable<Message>> GetAllMessagesBySenderAndReceiver(int senderId, int receiverId);
+        Task MarkAsSeen(int senderId, int receiverId);
+
+        Task SendMessage(int senderId, int receiverId, String content, bool seen);
     }
 }

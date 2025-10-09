@@ -82,11 +82,11 @@ namespace EbayChat
 
             app.MapStaticAssets();
             app.MapHub<ChatHub>("/chatHub");
+            app.MapHub<EbayChatHub>("/ebayChatHub");
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}")
                 .WithStaticAssets();
-
 
             app.Run();
         }
