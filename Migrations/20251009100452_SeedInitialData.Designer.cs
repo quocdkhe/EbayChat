@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EbayChat.Migrations
 {
     [DbContext(typeof(CloneEbayDbContext))]
-    [Migration("20251009093121_SeedFakeData")]
-    partial class SeedFakeData
+    [Migration("20251009100452_SeedInitialData")]
+    partial class SeedInitialData
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
