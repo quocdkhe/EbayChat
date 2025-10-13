@@ -9,6 +9,7 @@ services:
       - ConnectionStrings__DefaultConnection=Server=db,1433;Database=CloneEbayDB;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
     depends_on:
       - db
+      - redis
     networks:
       - appnet
     ports:
@@ -24,6 +25,7 @@ services:
       - ConnectionStrings__DefaultConnection=Server=db,1433;Database=CloneEbayDB;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
     depends_on:
       - db
+      - redis
     networks:
       - appnet
     ports:
@@ -39,6 +41,7 @@ services:
       - ConnectionStrings__DefaultConnection=Server=db,1433;Database=CloneEbayDB;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
     depends_on:
       - db
+      - redis
     networks:
       - appnet
     ports:
@@ -68,11 +71,19 @@ services:
     networks:
       - appnet
     volumes:
-      - dbdata:/var/opt/mssql  # persist database
+      - dbdata:/var/opt/mssql
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis-ebaychat
+    ports:
+      - "127.0.0.1:6379:6379"
+    networks:
+      - appnet
 
 networks:
   appnet:
 
 volumes:
-  dpkeys:  # shared Data Protection keys
-  dbdata:  # persist SQL Server data
+  dpkeys:
+  dbdata:
