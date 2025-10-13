@@ -1,5 +1,6 @@
 using EbayChat.Entities;
 using EbayChat.Hubs;
+using EbayChat.Entities;
 using EbayChat.Services.ServicesImpl;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +27,9 @@ namespace EbayChat
             // Dependency injection for services
             builder.Services.AddScoped<Services.IUserServices, UserServices>();
             builder.Services.AddScoped<Services.IChatServices, ChatServices>();
+            builder.Services.AddScoped<Services.ICategoryService, CategoryService>();
+            builder.Services.AddScoped<Services.IProductService, ProductService>();
+            builder.Services.AddHttpClient(); // for HttpClientFactory
 
             // Add view engines
             builder.Services.AddControllersWithViews();
