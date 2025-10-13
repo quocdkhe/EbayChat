@@ -2,7 +2,9 @@ version: '3.9'
 
 services:
   ebay-chat1:
-    build: .
+    build: 
+      context: .
+      target: runtime
     environment:
       - ConnectionStrings__DefaultConnection=Server=db,1433;Database=CloneEbayDB;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
     depends_on:
@@ -16,7 +18,9 @@ services:
       - dpkeys:/keys
 
   ebay-chat2:
-    build: .
+    build: 
+      context: .
+      target: runtime
     environment:
       - ConnectionStrings__DefaultConnection=Server=db,1433;Database=CloneEbayDB;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
     depends_on:
@@ -30,7 +34,9 @@ services:
       - dpkeys:/keys
 
   ebay-chat3:
-    build: .
+    build: 
+      context: .
+      target: runtime
     environment:
       - ConnectionStrings__DefaultConnection=Server=db,1433;Database=CloneEbayDB;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
     depends_on:
