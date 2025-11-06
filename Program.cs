@@ -1,6 +1,7 @@
 using EbayChat.Entities;
 using EbayChat.Hubs;
 using EbayChat.Entities;
+using EbayChat.Services;
 using EbayChat.Services.ServicesImpl;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +30,12 @@ namespace EbayChat
             builder.Services.AddScoped<Services.IChatServices, ChatServices>();
             builder.Services.AddScoped<Services.ICategoryService, CategoryService>();
             builder.Services.AddScoped<Services.IProductService, ProductService>();
+            builder.Services.AddScoped<Services.IOrderService, OrderService>();
+            builder.Services.AddScoped<Services.IReviewService, ReviewService>();
+            builder.Services.AddScoped<Services.IReturnRequestService, ReturnRequestService>();
+            builder.Services.AddScoped<Services.IDisputeService, DisputeService>();
+
+
             builder.Services.AddHttpClient(); // for HttpClientFactory
 
             // Add view engines

@@ -1,5 +1,5 @@
 ﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
-@model EbayChat.Models.ViewModel.CategoryListViewModel
+@using EbayChat.Models.ViewModel
 @using EbayChat.Entities
 
 @{
@@ -30,7 +30,39 @@
 
 						<ul class="dropdown-menu dropdown-menu-end">
 							<li>
-								<a class="dropdown-item text-danger"
+								<a class="dropdown-item text-primary text-decoration-none"
+								   asp-controller="Order" asp-action="MyOrders">
+									<i class="bi bi-box-arrow-right me-1"></i> My orders
+								</a>
+							</li>
+							<li>
+								<a class="dropdown-item text-primary text-decoration-none"
+								   asp-controller="ReturnRequest" asp-action="SentReturnRequests">
+									<i class="bi bi-box-arrow-right me-1"></i> My return requests
+								</a>
+							</li>
+							<li>
+								<a class="dropdown-item text-primary text-decoration-none"
+								   asp-controller="Dispute" asp-action="SentDisputes">
+									<i class="bi bi-box-arrow-right me-1"></i> My disputes
+								</a>
+							</li>
+							<hr />
+							<li>
+								<a class="dropdown-item text-primary text-decoration-none"
+								   asp-controller="ReturnRequest" asp-action="ReceivedReturnRequests">
+									<i class="bi bi-box-arrow-right me-1"></i> Upcoming return requests
+								</a>
+							</li>
+							<li>
+								<a class="dropdown-item text-primary text-decoration-none"
+								   asp-controller="Dispute" asp-action="ReceivedDisputes">
+									<i class="bi bi-box-arrow-right me-1"></i> Upcoming disputes
+								</a>
+							</li>
+							<hr />
+							<li>
+								<a class="dropdown-item text-danger text-decoration-none"
 								   asp-controller="Auth" asp-action="Logout">
 									<i class="bi bi-box-arrow-right me-1"></i> Logout
 								</a>
@@ -67,7 +99,7 @@
 			</div>
 
 			<img style="width: 45px; height: 30px;" src="/Assets/images/bell .svg" alt="">
-			<img style="width: 45px; height: 30px;" src="/;hAssets/images/cart.svg" alt="">
+			<img style="width: 45px; height: 30px;" src="/Assets/images/cart.svg" alt="">
 		</div>
 	</div>
 	<hr class="custom-hr">
