@@ -12,11 +12,15 @@ namespace EbayChat.Services.ServicesImpl
         }
         public async Task<List<Category>> GetAllCategories()
         {
-            return await _context.Categories.ToListAsync();
+            return await _context.Categories
+                .Include(c => c.Products)
+                .ToListAsync();
         }
         public async Task<Category> GetCategoryById(int id)
         {
-            return await _context.Categories.FindAsync(id);
+            return await _context.Categories
+                                .Include(c => c.Products)
+                                .FirstOrDefaultAsync(c => c.id == id);
         }
     }
 }

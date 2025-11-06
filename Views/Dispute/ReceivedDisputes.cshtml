@@ -1,0 +1,139 @@
+﻿@model List<EbayChat.Entities.Dispute>
+
+@{
+    ViewData["Title"] = "Received Disputes";
+    var success = TempData["SuccessMessage"] as string;
+    var error = TempData["ErrorMessage"] as string;
+}
+<nav aria-label="breadcrumb">
+	<ol class="breadcrumb">
+		<li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">eBay</a></li>
+		<li class="breadcrumb-item">
+			<a asp-controller="Order" asp-action="MyOrders">My orders</a>
+		</li>
+		<li class="breadcrumb-item active">
+			<a asp-controller="Dispute" asp-action="ReceivedDisputes">Upcoming disputes</a>
+		</li>
+	</ol>
+</nav>
+@if (!string.IsNullOrEmpty(error))
+{
+	<div class="alert alert-danger">@error</div>
+}
+@if (!string.IsNullOrEmpty(success))
+{
+	<div class="alert alert-success">@success</div>
+}
+<div class="container mt-4">
+    
+    <h3 class="mb-3">Received Disputes</h3>
+    
+    @if (Model == null || Model.Count == 0)
+    {
+        <div class="alert alert-light border">No disputes received.</div>
+    }
+    else
+    {
+        <table class="table table-bordered align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Order</th>
+                    <th>Buyer</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Resolution</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var d in Model)
+                {
+                    <tr>
+                        <td>@d.id</td>
+                        <td>@d.orderId</td>
+                        <td>@d.raisedByNavigation?.username</td>
+                        <td>@d.description</td>
+                        <td>
+                            @if (d.status?.ToLower() == "open")
+                            {
+                                <span class="badge bg-warning">@d.status</span>
+                            }
+                            else if (d.status?.ToLower() == "in progress")
+                            {
+                                <span class="badge bg-primary">@d.status</span>
+                            }
+                            @if (d.status?.ToLower() == "resolved")
+                            {
+                                <span class="badge bg-success">@d.status</span>
+                            }
+                            else if (d.status?.ToLower() == "closed")
+                            {
+                                <span class="badge bg-danger">@d.status</span>
+                            }
+                        </td>
+                        <td>@d.resolution</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#updateDisputeModal"
+                                    data-id="@d.id"
+                                    data-status="@d.status"
+                                    data-resolution="@d.resolution"
+                            @(d.status?.ToLower() == "open" || d.status?.ToLower() == "in progress" ? "" : "disabled")>
+                                Update
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+<!-- MODAL: Update Status + Resolution -->
+<div class="modal fade" id="updateDisputeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form asp-action="UpdateStatusAndResolution" asp-controller="Dispute" method="post" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Dispute</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="updDisputeId" name="id" />
+                <div class="mb-3">
+                    <label class="form-label">Status</label>
+                    <select id="updStatus" name="status" class="form-select" required>
+                        <option value="Open">Open</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Resolved">Resolved</option>
+                        <option value="Closed">Closed</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Resolution</label>
+                    <textarea id="updResolution" name="resolution" class="form-control" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const updateModal = document.getElementById('updateDisputeModal');
+        updateModal.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget;
+            const id = button.getAttribute('data-id');
+            const status = button.getAttribute('data-status');
+            const resolution = button.getAttribute('data-resolution');
+            document.getElementById('updDisputeId').value = id;
+            document.getElementById('updStatus').value = status;
+            document.getElementById('updResolution').value = resolution;
+        });
+    </script>
+}

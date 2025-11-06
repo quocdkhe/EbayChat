@@ -1,0 +1,120 @@
+﻿@model List<EbayChat.Entities.ReturnRequest>
+
+@{
+    ViewData["Title"] = "My Return Requests";
+    var success = TempData["SuccessMessage"] as string;
+    var error = TempData["ErrorMessage"] as string;
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">eBay</a></li>
+        <li class="breadcrumb-item">
+            <a asp-controller="Order" asp-action="MyOrders">My orders</a>
+        </li>
+        <li class="breadcrumb-item active">
+            <a asp-controller="ReturnRequest" asp-action="SentReturnRequests">My return requests</a>
+        </li>
+    </ol>
+</nav>
+@if (!string.IsNullOrEmpty(error))
+{
+    <div class="alert alert-danger">@error</div>
+}
+@if (!string.IsNullOrEmpty(success))
+{
+    <div class="alert alert-success">@success</div>
+}
+<div class="container mt-4">
+
+    <h3 class="mb-3">My Return Requests</h3>
+    @if (Model == null || Model.Count == 0)
+    {
+        <div class="alert alert-light border">You haven’t submitted any return requests.</div>
+    }
+    else
+    {
+        <table class="table align-middle border">
+            <thead class="table-light">
+                <tr>
+                    <th>Order ID</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                    <th>Created At</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var r in Model)
+                {
+                    <tr>
+                        <td>#@r.orderId</td>
+                        <td>@r.reason</td>
+                        <td>
+                            @if (r.status?.ToLower() == "pending")
+                            {
+                                <span class="badge bg-warning text-dark">@r.status</span>
+                            }
+                            else if (r.status?.ToLower() == "accepted")
+                            {
+                                <span class="badge bg-success">@r.status</span>
+                            }
+                            else if (r.status?.ToLower() == "rejected")
+                            {
+                                <span class="badge bg-danger">@r.status</span>
+                            }
+                        </td>
+                        <td>@r.createdAt?.ToString("dd/MM/yyyy")</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#editReasonModal"
+                                    data-id="@r.id"
+                                    data-reason="@r.reason"
+                            @(r.status?.ToLower() != "pending" ? "disabled" : "")>
+                                Edit Reason
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+<!-- MODAL: Edit Reason -->
+<div class="modal fade" id="editReasonModal" tabindex="-1" aria-labelledby="editReasonLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form asp-action="UpdateReason" asp-controller="ReturnRequest" method="post" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editReasonLabel">Update Return Reason</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="reasonId" name="id" />
+                <div class="mb-3">
+                    <label class="form-label">Reason</label>
+                    <textarea id="reasonText" name="reason" class="form-control" rows="3" required></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const modal = document.getElementById('editReasonModal');
+        modal.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget;
+            const id = button.getAttribute('data-id');
+            const reason = button.getAttribute('data-reason');
+
+            document.getElementById('reasonId').value = id;
+            document.getElementById('reasonText').value = reason;
+        });
+    </script>
+}

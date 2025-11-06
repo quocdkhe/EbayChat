@@ -1,0 +1,121 @@
+﻿@model List<EbayChat.Entities.ReturnRequest>
+@{
+    ViewData["Title"] = "Received Return Requests";
+	var success = TempData["SuccessMessage"] as string;
+	var error = TempData["ErrorMessage"] as string;
+}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">eBay</a></li>
+        <li class="breadcrumb-item">
+            <a asp-controller="Order" asp-action="MyOrders">My orders</a>
+        </li>
+        <li class="breadcrumb-item active">
+            <a asp-controller="ReturnRequest" asp-action="ReceivedReturnRequests">Upcoming return requests</a>
+        </li>
+    </ol>
+</nav>
+@if (!string.IsNullOrEmpty(error))
+{
+    <div class="alert alert-danger">@error</div>
+}
+@if (!string.IsNullOrEmpty(success))
+{
+    <div class="alert alert-success">@success</div>
+}
+<div class="container my-5">
+    <h3 class="mb-3">Upcoming return requests</h3>
+
+    <table class="table table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>#</th>
+                <th>Buyer</th>
+                <th>Order ID</th>
+                <th>Product</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr><td colspan="8" class="text-center text-muted">No return requests received.</td></tr>
+            }
+            else
+            {
+                int i = 1;
+                foreach (var r in Model)
+                {
+                    var product = r.order?.OrderItems?.FirstOrDefault()?.product;
+                    <tr>
+                        <td>@(i++)</td>
+                        <td>@r.user?.username</td>
+                        <td>#@r.orderId</td>
+                        <td>
+                            @if (product != null)
+                            {
+                                <div class="d-flex align-items-center">
+                                    <img src="@product.images" width="50" height="50" class="rounded me-2" />
+                                    <span>@product.title</span>
+                                </div>
+                            }
+                        </td>
+                        <td>@r.reason</td>
+                        <td>
+                            @if (r.status?.ToLower() == "pending")
+                            {
+                                <span class="badge bg-warning text-dark">@r.status</span>
+                            }
+                            else if (r.status?.ToLower() == "accepted")
+                            {
+                                <span class="badge bg-success">@r.status</span>
+                            }
+                            else if (r.status?.ToLower() == "rejected")
+                            {
+                                <span class="badge bg-danger">@r.status</span>
+                            }
+                        </td>
+                        <td>
+                            @if (r.status == "Pending")
+                            {
+                                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#updateModal_@r.id">
+                                    Manage
+                                </button>
+                            }
+                        </td>
+                    </tr>
+
+                    <!-- Modal xử lý -->
+                    <div class="modal fade" id="updateModal_@r.id" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form asp-action="UpdateStatus" asp-controller="ReturnRequest" method="post">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Update Return Request</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <input type="hidden" name="id" value="@r.id" />
+                                        <div class="mb-3">
+                                            <label>Status</label>
+                                            <select name="status" class="form-select" required>
+                                                <option selected value="@r.status">@r.status</option>
+                                                <option value="Accepted">Accept</option>
+                                                <option value="Rejected">Reject</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-success">Save</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </tbody>
+    </table>
+</div>

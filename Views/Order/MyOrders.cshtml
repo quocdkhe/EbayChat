@@ -1,0 +1,142 @@
+﻿@model List<EbayChat.Entities.OrderTable>
+@{
+    ViewData["Title"] = "My Orders";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    body {
+        background-color: #f7f7f7;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .order-card {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        margin-bottom: 20px;
+        overflow: hidden;
+        transition: all 0.3s;
+    }
+
+        .order-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+        }
+
+    .card-header-custom {
+        background-color: #f5f5f5;
+        border-bottom: 2px solid #e5e5e5;
+        padding: 15px 20px;
+        font-weight: 600;
+    }
+
+    .order-body {
+        padding: 20px;
+    }
+
+    .product-img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 6px;
+    }
+
+    .status-badge {
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 5px 15px;
+        color: white;
+    }
+
+    .status-completed {
+        background-color: #28a745;
+    }
+
+    .status-pending {
+        background-color: #ffc107;
+        color: #000;
+    }
+
+    .status-cancelled {
+        background-color: #dc3545;
+    }
+
+    .btn-view {
+        background-color: #3665f3;
+        color: white;
+        border: none;
+        border-radius: 25px;
+        padding: 8px 20px;
+        font-weight: 500;
+        transition: 0.3s;
+    }
+
+        .btn-view:hover {
+            background-color: #1e4db7;
+            color: white;
+        }
+</style>
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">eBay</a></li>
+        <li class="breadcrumb-item active">
+            <a asp-controller="Order" asp-action="MyOrders">My orders</a>
+        </li>
+    </ol>
+</nav>
+
+<div class="container mb-5">
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-light border text-center py-4">
+            <h5 class="mb-2">You haven't purchased anything yet.</h5>
+            <a href="/" class="btn btn-primary mt-2"><i class="fas fa-store me-2"></i>Start Shopping</a>
+        </div>
+    }
+    else
+    {
+        @foreach (var order in Model)
+        {
+            var firstItem = order.OrderItems.FirstOrDefault();
+            var statusClass = order.status switch
+            {
+                "Completed" => "status-completed",
+                "Pending" => "status-pending",
+                "Cancelled" => "status-cancelled",
+                _ => "status-pending"
+            };
+
+            <div class="order-card">
+                <div class="card-header-custom d-flex justify-content-between align-items-center">
+                    <span><i class="fas fa-receipt me-2"></i>Order #@order.id</span>
+                    <span class="status-badge @statusClass">@order.status</span>
+                </div>
+                <div class="order-body">
+                    <div class="d-flex align-items-center mb-3">
+                        @if (firstItem?.product?.images != null)
+                        {
+                            <img src="@firstItem.product.images" class="product-img me-3" alt="Product" />
+                        }
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1">@firstItem?.product?.title</h6>
+                            <small class="text-muted">Ordered on @order.orderDate?.ToString("dd/MM/yyyy")</small>
+                        </div>
+                        <div class="text-end">
+                            <div class="fw-bold text-danger mb-2">$@order.totalPrice</div>
+                            <a href="@Url.Action("OrderDetail", "Order", new { id = order.id })" class="btn-view">
+                                <i class="fas fa-eye me-1"></i>View Detail
+                            </a>
+                        </div>
+                    </div>
+
+                    @if (order.OrderItems.Count > 1)
+                    {
+                        <p class="text-muted mb-0"><i class="fas fa-boxes me-1"></i>+ @(order.OrderItems.Count - 1) more items</p>
+                    }
+                </div>
+            </div>
+        }
+    }
+</div>
