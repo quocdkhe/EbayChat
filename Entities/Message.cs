@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace EbayChat.Entities;
+﻿namespace EbayChat.Entities;
 
 public partial class Message
 {
@@ -14,6 +11,8 @@ public partial class Message
     public string? content { get; set; }
 
     public DateTime? timestamp { get; set; }
+
+    public bool? seen { get; set; } = false;
 
     public virtual User? receiver { get; set; }
 

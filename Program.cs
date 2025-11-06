@@ -1,4 +1,5 @@
-﻿//using EbayChat.Data;
+using EbayChat.Entities;
+using EbayChat.Hubs;
 using EbayChat.Entities;
 using EbayChat.Services;
 using EbayChat.Services.ServicesImpl;
@@ -26,6 +27,7 @@ namespace EbayChat
 
             // Dependency injection for services
             builder.Services.AddScoped<Services.IUserServices, UserServices>();
+            builder.Services.AddScoped<Services.IChatServices, ChatServices>();
             builder.Services.AddScoped<Services.ICategoryService, CategoryService>();
             builder.Services.AddScoped<Services.IProductService, ProductService>();
             builder.Services.AddScoped<Services.IOrderService, OrderService>();
@@ -38,6 +40,17 @@ namespace EbayChat
 
             // Add view engines
             builder.Services.AddControllersWithViews();
+            // Always add SignalR
+            var signalR = builder.Services.AddSignalR();
+
+            // Only use Redis backplane in production
+            if (builder.Environment.IsProduction())
+            {
+                signalR.AddStackExchangeRedis("redis:6379", options =>
+                {
+                    options.Configuration.ChannelPrefix = "EbayChat";
+                });
+            }
 
             // Add distributed SQL Server cache for sessions
             builder.Services.AddDistributedSqlServerCache(options =>
@@ -61,34 +74,30 @@ namespace EbayChat
             var app = builder.Build();
 
 
-            // Configure the HTTP request pipeline
+
+            // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
-            // Generate fake data
-            //using (var scope = app.Services.CreateScope())
-            //{
-            //    var context = scope.ServiceProvider.GetRequiredService<CloneEbayDbContext>();
-            //    var initializer = new DbInitializer(context);
-            //    initializer.Initialize();
-            //}
-
-
+            app.UseSession();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
 
             app.UseAuthorization();
 
-            app.UseSession(); // must be before controllers
 
+
+            app.MapStaticAssets();
+            app.MapHub<ChatHub>("/chatHub");
+            app.MapHub<EbayChatHub>("/ebayChatHub");
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Home}/{action=Index}/{id?}")
+                .WithStaticAssets();
 
             app.Run();
         }
