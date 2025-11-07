@@ -48,7 +48,6 @@ namespace EbayChat.Controllers
             if (product == null) return NotFound();
 
             var sellerInfo = await _userService.GetSellerInfoViewModelAsync(product.sellerId == null ? 0 : product.sellerId.Value);
-            Console.WriteLine(sellerInfo.ToString());
 
 
             var reviews = await _reviewService.GetReviewViewModelsByProductAsync(product.id);
