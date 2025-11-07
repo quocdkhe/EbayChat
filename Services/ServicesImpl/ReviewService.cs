@@ -23,7 +23,7 @@ namespace EbayChat.Services.ServicesImpl
                 .Where(o => o.buyerId == userId)
                 .AnyAsync(o => o.OrderItems.Any(oi => oi.productId == productId));
 
-            return !hasPurchased;
+            return hasPurchased;
         }
 
         public async Task<Review> AddReviewAsync(Review review)
