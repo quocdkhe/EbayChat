@@ -16,11 +16,53 @@ namespace ChatApp.Controllers
             _chatServices = chatServices;
         }
 
+        public async Task<IActionResult> Index()
+{
+    int? currentUserId = HttpContext.Session.GetInt32("userId");
+    if (currentUserId == null)
+    {
+        return RedirectToAction("Login", "Auth");
+    }
+
+    // Lấy danh sách tất cả tin nhắn có liên quan tới user hiện tại
+    var relatedMessages = await _context.Messages
+        .Include(m => m.sender)
+        .Include(m => m.receiver)
+        .Where(m => m.senderId == currentUserId || m.receiverId == currentUserId)
+        .ToListAsync();
+
+    // Group theo user đối phương (người còn lại trong cuộc trò chuyện)
+    var groupedChats = relatedMessages
+        .GroupBy(m => m.senderId == currentUserId ? m.receiverId : m.senderId)
+        .Select(g => new
+        {
+            PartnerId = g.Key,
+            PartnerName = g.First().senderId == currentUserId
+                ? g.First().receiver.username
+                : g.First().sender.username,
+            LastMessage = g.OrderByDescending(x => x.timestamp).First().content,
+            LastMessageTime = g.OrderByDescending(x => x.timestamp).First().timestamp
+        })
+        .OrderByDescending(x => x.LastMessageTime)
+        .ToList();
+
+    ViewBag.Chats = groupedChats;
+    ViewBag.CurrentUserId = currentUserId;
+
+    return View();
+}
+
 
 
         // Trang chat với một user cụ thể
-        public async Task<IActionResult> Chat(int senderId, int receiverId)
+        public async Task<IActionResult> Chat(int receiverId)
         {
+            // Lấy user hiện tại từ session
+            int? senderId = HttpContext.Session.GetInt32("userId");
+            if (senderId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
             var sender = await _context.Users.FindAsync(senderId);
             var receiver = await _context.Users.FindAsync(receiverId);
 
